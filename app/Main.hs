@@ -1,4 +1,8 @@
 module Main where
 
+import Artist
+import UdGraphic
+import Test.QuickCheck
+
 main :: IO ()
-main = putStrLn "Hello, Haskell!"
+main = print "Hello, Haskell!"
