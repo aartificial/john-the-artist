@@ -141,6 +141,11 @@ data Comanda   = Avanca Distancia
                | Para
                | Comanda :#: Comanda
 
+instance Show Comanda where
+  show (Avanca d) = "Avanca " ++ show d
+  show (Gira a) = "Gira " ++ show a
+  show (Para) = "Para"
+  show (c1 :#: c2) = show c1 ++ " :#: " ++ show c2
 
 -- Problema 8
 -- Pas de comandes a lines a pintar per GL graphics
