@@ -48,7 +48,7 @@ ajunta_sense_para (c:r) = c :#: ajunta_sense_para r
 -- Problema 5
 
 pentagon :: Distancia -> Comanda
-pentagon = undefined
+pentagon d = copia 5 (Avanca d :#: Gira 72)
 
 -- Problema 6
 
