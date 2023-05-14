@@ -20,11 +20,21 @@ ajunta (c:r) = c :#: ajunta r
 
 -- Problema 3
 
-prop_equivalent = undefined
+prop_equivalent :: Comanda -> Comanda -> Property
+prop_equivalent comanda1 comanda2 =
+  (comanda1 == comanda2) === (ajunta [comanda1] == ajunta [comanda2])
 
-prop_split_join = undefined
+prop_split_join :: Comanda -> Property
+prop_split_join c = ajunta (separa c) === c
 
-prop_split = undefined
+prop_split :: Comanda -> Property
+prop_split c =
+  not (any isPara (separa c)) .&&. not (any isConc (separa c))
+  where
+    isPara Para = True
+    isPara _ = False
+    isConc (_ :#: _) = True
+    isConc _ = False
 
 -- Problema 4
 
