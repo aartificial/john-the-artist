@@ -1,6 +1,6 @@
 module Artist where
 
-import UdGraphic
+import Internal
 import Test.QuickCheck
 import Debug.Trace
 

@@ -1,9 +1,5 @@
-module UdGraphic (
-    Comanda(..),
-    Distancia,
-    Angle
-    )
-    where
+module UdGraphic ()
+where
 
 import qualified Graphics.Rendering.OpenGL as GL
 import Graphics.UI.GLUT hiding (Angle)
@@ -12,8 +8,9 @@ import Data.List
 import Control.Monad( liftM, liftM2, liftM3 )
 import System.Random
 import Test.QuickCheck
+import Internal
+import Artist
 
-infixr 5 :#:
 
 -- Punts
 
@@ -133,26 +130,25 @@ toVertex (Pnt x y)  =  GL.vertex $ GL.Vertex3
 
 -- Definició de les comandes per moure el llapis
 
-type Para      = ()
-type Angle     = Float
-type Distancia = Float
-data Comanda   = Avanca Distancia
-               | Gira Angle
-               | Para
-               | Comanda :#: Comanda
-                deriving (Eq)
 
-instance Show Comanda where
-  show (Avanca d) = "Avanca " ++ show d
-  show (Gira a) = "Gira " ++ show a
-  show (Para) = "Para"
-  show (c1 :#: c2) = show c1 ++ " :#: " ++ show c2
 
 -- Problema 8
 -- Pas de comandes a lines a pintar per GL graphics
 
 execute :: Comanda -> [Ln]
-execute c  =  undefined
+execute c = let c' = ajunta (separa c)
+            in go (negre, Pnt 0 0, 0) c'
+  where
+    go :: (Llapis, Pnt, Angle) -> Comanda -> [Ln]
+    go _ Para = []
+    go (pencil, start, angle) (Avanca dist :#: rest) =
+      let end = start + Pnt (dist * cos (angle * pi / 180)) (dist * sin (angle * pi / 180))
+      in Ln pencil start end : go (pencil, end, angle) rest
+    go state@(pencil, start, angle) (Gira newAngle :#: rest) =
+      go (pencil, start, angle - newAngle) rest
+    go state@(pencil, start, angle) (_ :#: rest) =
+      go state rest
+    go _ _ = []
 
 
 -- Rescales all points in a list of lines
