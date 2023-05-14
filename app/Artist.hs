@@ -61,7 +61,9 @@ prop_poligon_pentagon d s a = poligon d s a === pentagon d
 -- Problema 7
 
 espiral :: Distancia -> Int -> Distancia -> Angle -> Comanda
-espiral = undefined
+espiral len num pas ang = ajunta_sense_para $ zipWith (\iteration counter -> poligon (len + fromIntegral iteration * pas) 1 ang) [0..] counter_list
+  where
+    counter_list = take num [1..]
 
 -- Problema 9
 
