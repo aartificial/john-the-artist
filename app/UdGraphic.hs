@@ -133,10 +133,12 @@ toVertex (Pnt x y)  =  GL.vertex $ GL.Vertex3
 
 -- Definició de les comandes per moure el llapis
 
+type Para      = ()
 type Angle     = Float
 type Distancia = Float
 data Comanda   = Avanca Distancia
                | Gira Angle
+               | Para
                | Comanda :#: Comanda
 
 
