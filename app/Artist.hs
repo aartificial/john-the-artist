@@ -53,9 +53,10 @@ pentagon d = copia 5 (Avanca d :#: Gira 72)
 -- Problema 6
 
 poligon :: Distancia -> Int -> Angle -> Comanda
-poligon = undefined
+poligon d l a = copia l (Avanca d :#: Gira a)
 
-prop_poligon_pentagon = undefined
+prop_poligon_pentagon :: Distancia -> Int -> Angle -> Property
+prop_poligon_pentagon d s a = poligon d s a === pentagon d
 
 -- Problema 7
 
