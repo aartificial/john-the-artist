@@ -39,7 +39,11 @@ prop_split c =
 -- Problema 4
 
 copia :: Int -> Comanda -> Comanda
-copia = undefined
+copia n c = ajunta_sense_para (replicate n c)
+
+ajunta_sense_para :: [Comanda] -> Comanda
+ajunta_sense_para [c] = c
+ajunta_sense_para (c:r) = c :#: ajunta_sense_para r
 
 -- Problema 5
 
