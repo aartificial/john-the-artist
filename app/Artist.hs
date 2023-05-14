@@ -7,7 +7,10 @@ import Debug.Trace
 -- Problema 1
 
 separa :: Comanda -> [Comanda]
-separa = undefined
+separa c@(Para) = []
+separa (c1 :#: c2) = separa c1 ++ separa c2
+separa c@(Avanca _) = [c]
+separa c@(Gira _) = [c]
 
 -- Problema 2
 
