@@ -4,7 +4,14 @@ module Internal (
     Angle
 ) where
 
+
+import qualified Graphics.Rendering.OpenGL as GL
+import Graphics.UI.GLUT hiding (Angle)
 infixr 5 :#:
+
+data Llapis = Color' GL.GLfloat GL.GLfloat GL.GLfloat
+            | Transparent
+            deriving (Eq, Ord, Show)
 
 type Para      = ()
 type Angle     = Float
@@ -13,6 +20,8 @@ data Comanda   = Avanca Distancia
                | Gira Angle
                | Para
                | Comanda :#: Comanda
+               | CanviaColor Llapis
+               | Branca Comanda
                 deriving (Eq)
 
 instance Show Comanda where
