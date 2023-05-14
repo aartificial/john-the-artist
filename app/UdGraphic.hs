@@ -135,7 +135,7 @@ toVertex (Pnt x y)  =  GL.vertex $ GL.Vertex3
 
 type Angle     = Float
 type Distancia = Float
-data Comanda   = Avança Distancia
+data Comanda   = Avanca Distancia
                | Gira Angle
                | Comanda :#: Comanda
 
@@ -176,6 +176,6 @@ instance Arbitrary Llapis where
 instance Arbitrary Comanda where
     arbitrary  =  sized cmd
         where
-          cmd n  |  n <= 0     =  oneof [liftM (Avança . abs) arbitrary,
+          cmd n  |  n <= 0     =  oneof [liftM (Avanca . abs) arbitrary,
                                          liftM Gira arbitrary ]
                  |  otherwise  =  liftM2 (:#:) (cmd (n `div` 2)) (cmd (n `div`2))
