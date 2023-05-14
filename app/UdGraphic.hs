@@ -140,6 +140,7 @@ data Comanda   = Avanca Distancia
                | Gira Angle
                | Para
                | Comanda :#: Comanda
+                deriving (Eq)
 
 instance Show Comanda where
   show (Avanca d) = "Avanca " ++ show d
