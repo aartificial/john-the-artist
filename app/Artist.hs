@@ -15,7 +15,8 @@ separa c@(Gira _) = [c]
 -- Problema 2
 
 ajunta :: [Comanda] -> Comanda
-ajunta = undefined
+ajunta [c] = c :#: Para
+ajunta (c:r) = c :#: ajunta r
 
 -- Problema 3
 
