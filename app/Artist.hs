@@ -3,6 +3,7 @@ module Artist where
 import Internal
 import Test.QuickCheck
 import Debug.Trace
+import Data.Maybe
 
 -- Problema 1
 
@@ -39,11 +40,11 @@ prop_split c =
 -- Problema 4
 
 copia :: Int -> Comanda -> Comanda
-copia n c = ajunta_sense_para (replicate n c)
+copia n c = ajuntaNoPara (replicate n c)
 
-ajunta_sense_para :: [Comanda] -> Comanda
-ajunta_sense_para [c] = c
-ajunta_sense_para (c:r) = c :#: ajunta_sense_para r
+ajuntaNoPara :: [Comanda] -> Comanda
+ajuntaNoPara [c] = c
+ajuntaNoPara (c:r) = c :#: ajuntaNoPara r
 
 -- Problema 5
 
@@ -61,14 +62,31 @@ prop_poligon_pentagon d s a = poligon d s a === pentagon d
 -- Problema 7
 
 espiral :: Distancia -> Int -> Distancia -> Angle -> Comanda
-espiral len num pas ang = ajunta_sense_para $ zipWith (\iteration counter -> poligon (len + fromIntegral iteration * pas) 1 ang) [0..] counter_list
+espiral len num pas ang = ajuntaNoPara $ zipWith (\iteration counter -> poligon (len + fromIntegral iteration * pas) 1 ang) [0..] counter_list
   where
     counter_list = take num [1..]
 
 -- Problema 9
 
 optimitza :: Comanda -> Comanda
-optimitza = undefined
+optimitza = ajuntaNoPara . opt 0 0 False . separa
+  where
+    opt :: Float -> Float -> Bool -> [Comanda] -> [Comanda]
+    opt a g nonZero [] = para a g nonZero
+    opt a g nonZero (Para : cs) = opt a g nonZero cs
+    opt a g nonZero (Avanca 0 : cs) = opt a g nonZero cs
+    opt a g nonZero (Gira 0 : cs) = opt a g nonZero cs
+    opt a g _ (Avanca d : cs) = emitGira g $ opt (a+d) 0 True cs
+    opt a g _ (Gira d : cs) = emitAvanca a $ opt 0 (g+d) True cs
+    emitAvanca :: Float -> [Comanda] -> [Comanda]
+    emitAvanca 0 cs = cs
+    emitAvanca a cs = Avanca a : cs
+    emitGira :: Float -> [Comanda] -> [Comanda]
+    emitGira 0 cs = cs
+    emitGira g cs = Gira g : cs
+    para :: Float -> Float -> Bool -> [Comanda]
+    para 0 0 False = [Para]
+    para a g _ = emitAvanca a $ emitGira g []
 
 -- Problema 10
 
