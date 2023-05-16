@@ -1,4 +1,11 @@
-module UdGraphic ()
+module UdGraphic (
+  display,
+  Llapis(..),
+  Comanda(..),
+  Distancia,
+  Angle,
+  blanc, negre, vermell, verd, verd_d, verd_D, blau, groc, groc_d, groc_D, marro, rosa, taronja, violeta
+)
 where
 
 import qualified Graphics.Rendering.OpenGL as GL
@@ -8,8 +15,7 @@ import Data.List
 import Control.Monad( liftM, liftM2, liftM3 )
 import System.Random
 import Test.QuickCheck
-import Internal
-import Artist
+infixr 5 :#:
 
 
 -- Punts
@@ -68,7 +74,17 @@ blanc   = Color' 1.0 1.0 1.0
 negre   = Color' 0.0 0.0 0.0
 vermell = Color' 1.0 0.0 0.0
 verd    = Color' 0.0 1.0 0.0
+verd_d  = Color' 0.0 0.5 0.0
+verd_D  = Color' 0.031 0.361 0.224
 blau    = Color' 0.0 0.0 1.0
+groc    = Color' 1.0 1.0 0.0
+groc_d  = Color' 0.89 0.686 0.161
+groc_D  = Color' 0.561 0.447 0.157
+marro   = Color' 0.6 0.3 0.0
+taronja = Color' 1.0 0.5 0.0
+rosa    = Color' 1.0 0.0 1.0
+violeta = Color' 0.5 0.0 1.0
+
 
 -- Lines
 
@@ -130,26 +146,69 @@ toVertex (Pnt x y)  =  GL.vertex $ GL.Vertex3
 
 -- Definició de les comandes per moure el llapis
 
-
+type Para      = ()
+type Angle     = Float
+type Distancia = Float
+data Comanda   = Avanca Distancia
+               | Gira Angle
+               | Para
+               | Comanda :#: Comanda
+               | CanviaColor Llapis
+               | Branca Comanda
+                deriving (Eq)
 
 -- Problema 8
 -- Pas de comandes a lines a pintar per GL graphics
 
 execute :: Comanda -> [Ln]
-execute c = let c' = ajunta (separa c)
-            in go (negre, Pnt 0 0, 0) c'
+execute c = let c' = ajuntaNoPara (separaAmbPara c)
+            in go (marro, Pnt 0 0, 0) c'
   where
     go :: (Llapis, Pnt, Angle) -> Comanda -> [Ln]
     go _ Para = []
     go (pencil, start, angle) (Avanca dist :#: rest) =
       let end = start + Pnt (dist * cos (angle * pi / 180)) (dist * sin (angle * pi / 180))
       in Ln pencil start end : go (pencil, end, angle) rest
+    go (pencil, start, angle) (Avanca dist) =
+      let end = start + Pnt (dist * cos (angle * pi / 180)) (dist * sin (angle * pi / 180))
+      in [Ln pencil start end]
     go state@(pencil, start, angle) (Gira newAngle :#: rest) =
       go (pencil, start, angle - newAngle) rest
+    go state@(pencil, start, angle) (Gira newAngle) =
+      go (pencil, start, angle - newAngle) Para
+    go (pencil, start, angle) (CanviaColor newPencil :#: rest) =
+      go (newPencil, start, angle) rest
+    go (pencil, start, angle) (CanviaColor newPencil) =
+      go (newPencil, start, angle) Para
+    go state@(pencil, start, angle) (Branca branch :#: rest) =
+        let branchLines = go (pencil, start, angle) branch
+        in branchLines ++ go (pencil, start, angle) rest
+    go state@(pencil, start, angle) (Branca branch) =
+        let branchLines = go (pencil, start, angle) branch
+        in branchLines ++ go (pencil, start, angle) Para
     go state@(pencil, start, angle) (_ :#: rest) =
       go state rest
-    go _ _ = []
 
+
+separa :: Comanda -> [Comanda]
+separa (Para) = []
+separa (c1 :#: c2) = separa c1 ++ separa c2
+separa c = [c]
+
+separaAmbPara :: Comanda -> [Comanda]
+separaAmbPara c@(Para :#: rest) = c : separaAmbPara rest
+separaAmbPara (c1 :#: c2) = separaAmbPara c1 ++ separaAmbPara c2
+separaAmbPara c = [c]
+
+-- Problema 2
+
+ajunta :: [Comanda] -> Comanda
+ajunta [] = Para
+ajunta cs = foldr1 (:#:) (cs ++ [Para])
+
+ajuntaNoPara :: [Comanda] -> Comanda
+ajuntaNoPara [] = Para
+ajuntaNoPara cs = foldr1 (:#:) cs
 
 -- Rescales all points in a list of lines
 --  from an arbitrary scale
@@ -170,6 +229,16 @@ rescale lines | points == [] = []
 
 
 -- Generators for QuickCheck
+
+instance Show Comanda where
+  show Para = "Para"
+  show (Avanca dist) = "Avanca " ++ show dist
+  show (Gira angle)
+    | angle < 0 = "Gira (" ++ show angle ++ ")"
+    | otherwise = "Gira " ++ show angle
+  show (CanviaColor color) = "CanviaColor " ++ show color
+  show (Branca comanda) = "Branca (" ++ show comanda ++ ")"
+  show (c1 :#: c2) = show c1 ++ " :#: " ++ show c2
 
 instance Arbitrary Llapis where
     arbitrary  =  sized pencil
