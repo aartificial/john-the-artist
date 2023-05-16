@@ -162,7 +162,7 @@ hilbertGrammar = Grammar {
 fletxaGrammar :: Grammar
 fletxaGrammar = Grammar {
     angle = 60,
-    rules = [('f', "g-f-g"), ('g', "f+g+f")],
+    rules = [('f', "g+f+g"), ('g', "f-g-f")],
     start = "f",
     rewrite = replaceCommandsFletxa
 }

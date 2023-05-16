@@ -823,7 +823,7 @@ Finalment, si el caràcter no és cap dels anteriors, simplement l'ignorem i con
 \pagebreak
 
 \begin{center}
-\verb|display(fletxa 11)|
+\verb|display(fletxa 12)|
 \end{center}
 
 ![fletxa.png](res/fletxa.png)
