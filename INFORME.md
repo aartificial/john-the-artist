@@ -2,7 +2,7 @@
     John, l’artista\\
     Practica de Programació Funcional}}
 \date{Curs 22/23}
-\author{Jordi Soler Iglesias, Gerard Saez Sanchez}
+\author{Jordi Soler Iglesias, Gerard Sánchez Sáez}
 \maketitle
 
 ## Prefaci
