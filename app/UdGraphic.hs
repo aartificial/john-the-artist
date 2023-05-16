@@ -4,7 +4,7 @@ module UdGraphic (
   Comanda(..),
   Distancia,
   Angle,
-  blanc, negre, vermell, verd, verd_d, verd_D, blau, groc, groc_d, groc_D, marro, rosa, taronja, violeta
+  blanc, negre, vermell, verd, verd_d, verd_D, blau, groc, groc_d, groc_D, marro, rosa, taronja, violeta, gris
 )
 where
 
@@ -72,6 +72,7 @@ pencilToRGB Transparent  =  error "pencilToRGB: transparent"
 blanc, negre, vermell, verd, blau :: Llapis
 blanc   = Color' 1.0 1.0 1.0
 negre   = Color' 0.0 0.0 0.0
+gris    = Color' 0.5 0.5 0.5
 vermell = Color' 1.0 0.0 0.0
 verd    = Color' 0.0 1.0 0.0
 verd_d  = Color' 0.0 0.5 0.0
