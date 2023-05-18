@@ -283,6 +283,14 @@ Finalment, s'utilitza ```ajuntaNoPara``` per concatenar totes les comandes gener
 
 \newpage
 
+\begin{center}
+\texttt{display(espiral 100)}
+\end{center}
+
+![espiral4.png](res/espiral4.png)
+
+\newpage
+
 ## Problema 8
 
 ```haskell
@@ -460,8 +468,11 @@ optimitza = ajuntaNoPara . opt 0 0 False . separa
     opt a g nonZero (Gira 0 : cs) = opt a g nonZero cs
     opt a g _ (Avanca d : cs) = emitGira g $ opt (a+d) 0 True cs
     opt a g _ (Gira d : cs) = emitAvanca a $ opt 0 (g+d) True cs
-    opt a g nonZero ((CanviaColor l) : cs) = CanviaColor l : opt a g nonZero cs
-    opt a g nonZero ((Branca c) : cs) = emitAvanca a $ emitGira g $ Branca (optimitza c) : opt 0 0 False cs
+    opt a g nonZero ((CanviaColor l) : cs) = 
+      CanviaColor l : opt a g nonZero cs
+    opt a g nonZero ((Branca c) : cs) = 
+      emitAvanca a $ emitGira g 
+        $ Branca (optimitza c) : opt 0 0 False cs
     
     emitAvanca :: Float -> [Comanda] -> [Comanda]
     emitAvanca 0 cs = cs
@@ -909,8 +920,6 @@ Després de fer aquesta pràctica, hem après moltes coses interessants sobre la
 
 També hem pogut optimitzar les comandes, eliminant les innecessàries i consolidant les consecutives. Això ens ha obligat a comprendre bé com funcionen les llistes en Haskell i com fer servir funcions com 'fold' per a manipular-les de manera eficient.
 
-A més, hem après a generar comandes basades en diferents gramàtiques de fractals. Ha sigut interessant veure com regles simples poden crear tanta bellesa i complexitat en els fractals.
-
-Per acabar, hem treballat amb mònades, una característica molt potent i única de Haskell. Aquesta experiència ens ha ajudat a comprendre millor com funcionen els estats en Haskell i com es poden utilitzar per a resoldre problemes complexos.
+A més, hem après a generar comandes basades en diferents gramàtiques de fractals. Ha sigut interessant veure com regles simples poden crear tanta complexitat en els fractals.
 
 En resum, aquesta pràctica ens ha proporcionat una experiència molt valuosa per a entendre com utilitzar la programació funcional en Haskell per a resoldre problemes d'una manera nova i interessant. Ha estat una experiencia divertida.

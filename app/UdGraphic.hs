@@ -161,32 +161,48 @@ data Comanda   = Avanca Distancia
 -- Problema 8
 -- Pas de comandes a lines a pintar per GL graphics
 
+-- Executa una comanda i retorna una llista de línies
 execute :: Comanda -> [Ln]
-execute c = let c' = ajuntaNoPara (separaAmbPara c)
-            in go (marro, Pnt 0 0, 0) c'
+execute c =
+  let c' = ajuntaNoPara (separaAmbPara c) -- Ajunta les comandes consecutives i elimina les comandes Para consecutives
+  in go (marro, Pnt 0 0, 0) c'            -- Inicia l'estat inicial (llapis, punt inicial, angle) i crida la funció go
   where
+    -- Funció auxiliar per executar les comandes recursivament
     go :: (Llapis, Pnt, Angle) -> Comanda -> [Ln]
-    go _ Para = []
+    go _ Para = []                        -- Si la comanda és Para, no es generen línies i es retorna una llista buida
+    -- Calcula el punt final basat en la distància i l'angle, utilitzant les funcions trigonomètriques
     go (pencil, start, angle) (Avanca dist :#: rest) =
+    -- Genera una línia amb el llapis, el punt inicial i el punt final, i crida recursivament go amb l'estat actualitzat i la resta de la comanda
       let end = start + Pnt (dist * cos (angle * pi / 180)) (dist * sin (angle * pi / 180))
       in Ln pencil start end : go (pencil, end, angle) rest
+    -- En cas que la comanda Avança no estigui seguida de cap altra comanda, s'acaba l'execució i s'obté una única línia
     go (pencil, start, angle) (Avanca dist) =
+    -- Genera una única línia amb el llapis, el punt inicial i el punt final
       let end = start + Pnt (dist * cos (angle * pi / 180)) (dist * sin (angle * pi / 180))
       in [Ln pencil start end]
+    -- Actualitza l'angle i crida recursivament go amb l'estat actualitzat i la resta de la comanda
     go state@(pencil, start, angle) (Gira newAngle :#: rest) =
       go (pencil, start, angle - newAngle) rest
+    -- Si la comanda Gira no està seguida de cap altra comanda, s'acaba l'execució sense generar línies
     go state@(pencil, start, angle) (Gira newAngle) =
       go (pencil, start, angle - newAngle) Para
+    -- Actualitza el llapis i crida recursivament go amb l'estat actualitzat i la resta de la comanda
     go (pencil, start, angle) (CanviaColor newPencil :#: rest) =
       go (newPencil, start, angle) rest
+    -- Si la comanda CanviaColor no està seguida de cap altra comanda, s'acaba l'execució sense generar línies
     go (pencil, start, angle) (CanviaColor newPencil) =
       go (newPencil, start, angle) Para
+    -- Executa la branca recursivament i obté les línies generades
+    -- Concatena les línies de la branca amb les línies generades per les comandes següents i crida recursivament go
     go state@(pencil, start, angle) (Branca branch :#: rest) =
-        let branchLines = go (pencil, start, angle) branch
-        in branchLines ++ go (pencil, start, angle) rest
+      let branchLines = go (pencil, start, angle) branch
+      in branchLines ++ go (pencil, start, angle) rest
+    -- Executa la branca recursivament i obté les línies generades
+    -- Concatena les línies de la branca amb les línies generades per la resta de la comanda i crida recursivament go
     go state@(pencil, start, angle) (Branca branch) =
-        let branchLines = go (pencil, start, angle) branch
-        in branchLines ++ go (pencil, start, angle) Para
+      let branchLines = go (pencil, start, angle) branch
+      in branchLines ++ go (pencil, start, angle) Para
+    -- Si la comanda no és cap de les anteriors, es descarta i es crida recursivament go amb la resta de la comanda
     go state@(pencil, start, angle) (_ :#: rest) =
       go state rest
 
