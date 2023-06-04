@@ -126,7 +126,7 @@ optimitza = ajuntaNoPara . opt 0 0 False . separa
     -- Implementació de la funció optimitza utilitzant les funcions auxiliars opt, emitAvanca, emitGira i para
     opt :: Float -> Float -> Bool -> [Comanda] -> [Comanda]
     -- Condició de parada: si no queden més comandes, es crida la funció para per generar la comanda final
-    opt a g nonZero [] = para a g nonZero
+    opt a g nonZero [] = para a g True
     -- Si es troba una comanda Para, s'ignora i es crida opt recursivament amb la resta de comandes
     opt a g nonZero (Para : cs) = opt a g nonZero cs
     -- Si es troba una comanda Avança 0 o Gira 0, s'ignora i es crida opt recursivament amb la resta de comandes
@@ -143,9 +143,9 @@ optimitza = ajuntaNoPara . opt 0 0 False . separa
     -- Si es troba una comanda Branca c, s'afegeix la distància acumulada a través de la funció emitAvanca,
     -- l'angle acumulat g a través de la funció emitGira, i es crida optimitza recursivament amb la comanda c
     -- optimitzada (optimitza c), i s'afegeix a la llista de comandes Branca
-    -- Finalment, es crida opt recursivament amb la distància i l'angle reiniciats (0), l'indicador posat a True
+    -- Finalment, es crida opt recursivament amb la distància i l'angle reiniciats (0), l'indicador posat a False
     -- i la resta de comandes cs
-    opt a g nonZero ((Branca c) : cs) = emitAvanca a $ emitGira g $ Branca (optimitza c) : opt 0 0 True cs
+    opt a g nonZero ((Branca c) : cs) = emitAvanca a $ emitGira g $ Branca (optimitza c) : opt 0 0 False cs
 
     -- Funció auxiliar que afegeix una comanda Avança amb una distància a la llista de comandes
     emitAvanca :: Float -> [Comanda] -> [Comanda]

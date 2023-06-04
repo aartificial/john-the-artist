@@ -461,7 +461,7 @@ optimitza :: Comanda -> Comanda
 optimitza = ajuntaNoPara . opt 0 0 False . separa
   where
     opt :: Float -> Float -> Bool -> [Comanda] -> [Comanda]
-    opt a g nonZero [] = para a g nonZero
+    opt a g nonZero [] = para a g True
     opt a g nonZero (Para : cs) = opt a g nonZero cs
     opt a g nonZero (Avanca 0 : cs) = opt a g nonZero cs
     opt a g nonZero (Gira 0 : cs) = opt a g nonZero cs
@@ -471,7 +471,7 @@ optimitza = ajuntaNoPara . opt 0 0 False . separa
       CanviaColor l : opt a g nonZero cs
     opt a g nonZero ((Branca c) : cs) = 
       emitAvanca a $ emitGira g 
-        $ Branca (optimitza c) : opt 0 0 True cs
+        $ Branca (optimitza c) : opt 0 0 False cs
     
     emitAvanca :: Float -> [Comanda] -> [Comanda]
     emitAvanca 0 cs = cs
@@ -504,11 +504,11 @@ Aquesta és la definició de la funció auxiliar 'opt' que pren quatre paràmetr
 - `nonZero` (un indicador que especifica si ja s'ha realitzat algun moviment no nul)
 - `cs` (la llista de comandes restants).
 
-En aquesta línia, s'estableix la condició de parada de la recursió: si no queden més comandes, es crida la funció `para` per generar la comanda final.
+En aquesta línia, s'estableix la condició de parada de la recursió: si no queden més comandes, es crida la funció `para` amb `nonZero` a `True` per generar la comanda final.
 
 ```haskell
 opt :: Float -> Float -> Bool -> [Comanda] -> [Comanda]
-opt a g nonZero [] = para a g nonZero
+opt a g nonZero [] = para a g True
 ```
 
 Aquestes són les clàusules per a les comandes `Para`, `Avança 0` i `Gira 0`. 
