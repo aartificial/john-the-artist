@@ -120,3 +120,17 @@ test14_2 :: IO ()
 test14_2 = print $ lsystem brancaGrammar 2
 test14_3 :: IO ()
 test14_3 = print $ lsystem brancaGrammar 3
+
+test15_1 :: IO ()
+test15_1 = print $ lsystem bushGrammar 1
+test15_2 :: IO ()
+test15_2 = print $ lsystem bushGrammar 2
+test15_3 :: IO ()
+test15_3 = print $ lsystem bushGrammar 3
+
+test16_1 :: IO ()
+test16_1 = print $ lsystem florGrammar 1
+test16_2 :: IO ()
+test16_2 = print $ lsystem florGrammar 2
+test16_3 :: IO ()
+test16_3 = print $ lsystem florGrammar 3
