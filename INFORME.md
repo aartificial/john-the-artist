@@ -544,12 +544,12 @@ Aquesta clàusula s'aplica quan s'ha trobat una comanda `Branca`.
 S'apliquen les funcions auxiliars `emitAvanca` i `emitGira` per afegir la distància acumulada `a` i l'angle acumulat `g` respectivament.
 
 A continuació, es crida recursivament `optimitza` sobre la comanda `c` continguda a la `Branca` i s'afegeix a la llista de comandes optimitzades. 
-Finalment, es crida recursivament `opt` amb la distància `i`, l'angle reiniciat (`0`), l'indicador posat a `True` i la llista de comandes restants.
+Finalment, es crida recursivament `opt` amb la distància `i`, l'angle reiniciat (`0`), l'indicador posat a `False` i la llista de comandes restants.
 
 ```haskell
 opt a g nonZero ((Branca c) : cs) = 
     emitAvanca a $ emitGira g $ Branca (optimitza c) 
-        : opt 0 0 True cs
+        : opt 0 0 False cs
 ```
 
 Aquesta és la definició de la funció auxiliar `emitAvanca`, que afegeix una comanda `Avança` amb una distància `a` a la llista de comandes. 
