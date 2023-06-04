@@ -77,7 +77,7 @@ La funció "ajunta" pren una llista de comandes i les uneix en una única comand
 Utilitza la recursió i l'operador ":#:" per unir les comandes de manera successiva. Si la llista és buida, retorna la comanda "Para" que indica el final de la seqüència de comandes.
 L'ús de la funció foldr1 ens permet aplicar l'operador ":#:" a tots els elements de la llista, des de l'últim fins al primer, creant així la comanda final que combina totes les comandes originals.
 
-![ajunga.png](res/ajunta.png)
+![ajunta.png](res/ajunta.png)
 
 \newpage
 
@@ -134,7 +134,6 @@ Aquest codi conté tres propietats escrites en Haskell per verificar el comporta
 
 ![prop_equivalent.png](res/prop_equivalent.png)
 ![prop_split_join.png](res/prop_split_join.png)
-![prop_split_join1.png](res/prop_split_join1.png)
 ![prop_split.png](res/prop_split.png)
 
 \pagebreak
@@ -284,7 +283,7 @@ Finalment, s'utilitza ```ajuntaNoPara``` per concatenar totes les comandes gener
 \newpage
 
 \begin{center}
-\texttt{display(espiral 100)}
+\texttt{display(espiral 30 100 5 30)}
 \end{center}
 
 ![espiral4.png](res/espiral4.png)
@@ -472,7 +471,7 @@ optimitza = ajuntaNoPara . opt 0 0 False . separa
       CanviaColor l : opt a g nonZero cs
     opt a g nonZero ((Branca c) : cs) = 
       emitAvanca a $ emitGira g 
-        $ Branca (optimitza c) : opt 0 0 False cs
+        $ Branca (optimitza c) : opt 0 0 True cs
     
     emitAvanca :: Float -> [Comanda] -> [Comanda]
     emitAvanca 0 cs = cs
@@ -545,12 +544,12 @@ Aquesta clàusula s'aplica quan s'ha trobat una comanda `Branca`.
 S'apliquen les funcions auxiliars `emitAvanca` i `emitGira` per afegir la distància acumulada `a` i l'angle acumulat `g` respectivament.
 
 A continuació, es crida recursivament `optimitza` sobre la comanda `c` continguda a la `Branca` i s'afegeix a la llista de comandes optimitzades. 
-Finalment, es crida recursivament `opt` amb la distància `i`, l'angle reiniciat (`0`), l'indicador posat a `False` i la llista de comandes restants.
+Finalment, es crida recursivament `opt` amb la distància `i`, l'angle reiniciat (`0`), l'indicador posat a `True` i la llista de comandes restants.
 
 ```haskell
 opt a g nonZero ((Branca c) : cs) = 
     emitAvanca a $ emitGira g $ Branca (optimitza c) 
-        : opt 0 0 False cs
+        : opt 0 0 True cs
 ```
 
 Aquesta és la definició de la funció auxiliar `emitAvanca`, que afegeix una comanda `Avança` amb una distància `a` a la llista de comandes. 

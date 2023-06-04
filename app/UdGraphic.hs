@@ -4,7 +4,8 @@ module UdGraphic (
   Comanda(..),
   Distancia,
   Angle,
-  blanc, negre, vermell, verd, verd_d, verd_D, blau, groc, groc_d, groc_D, marro, rosa, taronja, violeta, gris
+  blanc, negre, vermell, verd, verd_d, verd_D, blau, groc, groc_d, groc_D, marro, rosa, taronja, violeta, gris,
+  execute
 )
 where
 

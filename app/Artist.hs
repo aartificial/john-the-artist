@@ -4,6 +4,8 @@ module Artist (
   ajuntaNoPara,
   separaAmbPara,
   optimitza,
+  copia,
+  poligon,
   pentagon,
   triangle,
   fulla,
@@ -12,7 +14,20 @@ module Artist (
   branca,
   bush,
   flor,
-  espiral
+  espiral,
+  prop_equivalent,
+  prop_split,
+  prop_split_join,
+  prop_poligon_pentagon,
+  triangleGrammar,
+  fletxaGrammar,
+  hilbertGrammar,
+  brancaGrammar,
+  bushGrammar,
+  florGrammar,
+  fullaGrammar,
+  comanda_debug,
+  lsystem
 ) where
 
 import Test.QuickCheck
@@ -128,9 +143,9 @@ optimitza = ajuntaNoPara . opt 0 0 False . separa
     -- Si es troba una comanda Branca c, s'afegeix la distància acumulada a través de la funció emitAvanca,
     -- l'angle acumulat g a través de la funció emitGira, i es crida optimitza recursivament amb la comanda c
     -- optimitzada (optimitza c), i s'afegeix a la llista de comandes Branca
-    -- Finalment, es crida opt recursivament amb la distància i l'angle reiniciats (0), l'indicador posat a False
+    -- Finalment, es crida opt recursivament amb la distància i l'angle reiniciats (0), l'indicador posat a True
     -- i la resta de comandes cs
-    opt a g nonZero ((Branca c) : cs) = emitAvanca a $ emitGira g $ Branca (optimitza c) : opt 0 0 False cs
+    opt a g nonZero ((Branca c) : cs) = emitAvanca a $ emitGira g $ Branca (optimitza c) : opt 0 0 True cs
 
     -- Funció auxiliar que afegeix una comanda Avança amb una distància a la llista de comandes
     emitAvanca :: Float -> [Comanda] -> [Comanda]
@@ -179,6 +194,14 @@ gen rules n s = gen rules (n-1) (concatMap (applyRules rules) s)
 comanda :: Grammar -> Int -> Comanda
 comanda grammar n = optimitza $ (rewrite grammar) grammar (gen (rules grammar) n (start grammar))
 
+-- Auxiliar per obtenir el L-system sense reescriptura
+lsystem :: Grammar -> Int -> String
+lsystem grammar n = gen (rules grammar) n (start grammar)
+
+-- Auxiliar per obtenir el L-system amb reescriptura no optimitzada
+comanda_debug :: Grammar -> Int -> Comanda
+comanda_debug grammar n = (rewrite grammar) grammar (gen (rules grammar) n (start grammar))
+
 -- Grammar definitions
 
 triangleGrammar :: Grammar
@@ -217,7 +240,7 @@ brancaGrammar :: Grammar
 brancaGrammar = Grammar {
     angle = 22.5,
     rules = [('g', "f-[[g]+g]+f[+fg]-g"), ('f', "ff")],
-    start = "r",
+    start = "g",
     rewrite = replaceCommandsBranca
 }
 
@@ -341,7 +364,7 @@ replaceCommandsBranca grammar xs = fst $ parse 0 xs
     parse _ [] = (Para, [])
     parse depth (x:xs)
       | x == 'f'  = let (cmds, rest) = parse depth xs
-                    in  (Avanca 1:#: cmds, rest)
+                    in  (Avanca 1 :#: cmds, rest)
       | x == '+'  = let (cmds, rest) = parse depth xs
                     in  (Gira ang :#: cmds, rest)
       | x == '-'  = let (cmds, rest) = parse depth xs
